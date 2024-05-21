@@ -35,16 +35,18 @@ exports.loginPage = (req, res, next) => {
   res.render("login", { footer: false });
 };
 
-exports.profilePage = (req, res, next) => {
-  res.render("profile", { footer: true });
+exports.profilePage = async (req, res, next) => {
+  const user = await userModel.findOne({username: req.session.passport.user});
+  res.render("profile", { footer: true, user });
 };
 
 exports.feedPage = (req, res, next) => {
   res.render("feed", { footer: true });
 };
 
-exports.editPage = (req, res, next) => {
-  res.render("edit", { footer: true });
+exports.editPage = async (req, res, next) => {
+  const user = await userModel.findOne({username: req.session.passport.user}) 
+  res.render("edit", { footer: true, user });
 };
 
 exports.searchPage = (req, res, next) => {
@@ -54,3 +56,22 @@ exports.searchPage = (req, res, next) => {
 exports.uploadPage = (req, res, next) => {
   res.render("upload", { footer: true });
 };
+
+exports.updateProfile = async (req, res, next) => {
+  const user = await userModel.findOneAndUpdate(
+    {
+      username: req.session.passport.user
+    }, 
+    {
+      username: req.body.username,
+      name: req.body.name,
+      bio: req.body.bio
+    }, 
+  )
+  if(req.file){
+    user.profileImage = req.file.filename
+  }
+  await user.save();
+
+  res.redirect("/profile");
+}

@@ -9,9 +9,12 @@ const {
   searchPage,
   registerUser,
   logoutUser,
+  updateProfile,
 } = require('../controllers/indexController');
 const passport = require("passport");
 var router = express.Router();
+const upload = require("../middleware/multer");
+
 
 router.get('/', singupPage);
 
@@ -26,6 +29,9 @@ router.get("/edit", isLoggedIn, editPage);
 router.get("/search", isLoggedIn, searchPage);
 
 router.get("/upload", isLoggedIn, uploadPage);
+
+// edit profile
+router.post("/update", isLoggedIn, upload.single("image"), updateProfile);
 
 
 // passport setup
