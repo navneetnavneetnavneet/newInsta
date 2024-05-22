@@ -41,8 +41,10 @@ exports.profilePage = async (req, res, next) => {
   res.render("profile", { footer: true, user });
 };
 
-exports.feedPage = (req, res, next) => {
-  res.render("feed", { footer: true });
+exports.feedPage = async (req, res, next) => {
+  const user = await userModel.findOne({username: req.session.passport.user});
+  const posts = await postModel.find().populate("user");
+  res.render("feed", { footer: true, user, posts });
 };
 
 exports.editPage = async (req, res, next) => {
