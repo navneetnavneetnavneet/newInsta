@@ -10,6 +10,7 @@ const {
   registerUser,
   logoutUser,
   updateProfile,
+  uploadPostAndStory,
 } = require('../controllers/indexController');
 const passport = require("passport");
 var router = express.Router();
@@ -32,6 +33,9 @@ router.get("/upload", isLoggedIn, uploadPage);
 
 // edit profile
 router.post("/update", isLoggedIn, upload.single("image"), updateProfile);
+
+// upload post and story
+router.post("/upload", isLoggedIn, upload.single("image"), uploadPostAndStory);
 
 
 // passport setup

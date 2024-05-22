@@ -1,5 +1,6 @@
-const userModel = require('../models/userModel');
-const passport = require('passport');
+const userModel = require("../models/userModel");
+const postModel = require("../models/postModel");
+const passport = require("passport");
 const localStrategy = require("passport-local");
 
 // local Strategy
@@ -36,7 +37,7 @@ exports.loginPage = (req, res, next) => {
 };
 
 exports.profilePage = async (req, res, next) => {
-  const user = await userModel.findOne({username: req.session.passport.user});
+  const user = await userModel.findOne({ username: req.session.passport.user }).populate("posts");
   res.render("profile", { footer: true, user });
 };
 
@@ -45,7 +46,7 @@ exports.feedPage = (req, res, next) => {
 };
 
 exports.editPage = async (req, res, next) => {
-  const user = await userModel.findOne({username: req.session.passport.user}) 
+  const user = await userModel.findOne({ username: req.session.passport.user });
   res.render("edit", { footer: true, user });
 };
 
@@ -53,25 +54,42 @@ exports.searchPage = (req, res, next) => {
   res.render("search", { footer: true });
 };
 
-exports.uploadPage = (req, res, next) => {
+exports.uploadPage = async (req, res, next) => {
   res.render("upload", { footer: true });
 };
 
 exports.updateProfile = async (req, res, next) => {
   const user = await userModel.findOneAndUpdate(
     {
-      username: req.session.passport.user
-    }, 
+      username: req.session.passport.user,
+    },
     {
       username: req.body.username,
       name: req.body.name,
-      bio: req.body.bio
-    }, 
-  )
-  if(req.file){
-    user.profileImage = req.file.filename
+      bio: req.body.bio,
+    }
+  );
+  if (req.file) {
+    user.profileImage = req.file.filename;
   }
   await user.save();
-
   res.redirect("/profile");
-}
+};
+
+exports.uploadPostAndStory = async (req, res, next) => {
+  try {
+    const user = await userModel.findOne({
+      username: req.session.passport.user,
+    });
+    const post = await postModel.create({
+      caption: req.body.caption,
+      user: user._id,
+      picture: req.file.filename,
+    });
+    user.posts.push(post._id);
+    await user.save();
+    res.redirect("/feed");
+  } catch (error) {
+    console.log("Error ", error.message);
+  }
+};
