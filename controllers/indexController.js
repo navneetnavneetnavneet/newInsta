@@ -101,3 +101,20 @@ exports.seachUser = async (req, res, next) => {
   const users = await userModel.find({username: regex});
   res.send(users);
 }
+
+exports.postLike = async (req, res, next) => {
+  try {
+    const user = await userModel.findOne({username: req.session.passport.user});
+    const post = await postModel.findOne({_id: req.params.id});
+    if(post.likes.indexOf(user._id) === -1){
+      post.likes.push(user._id);
+    }
+    else{
+      post.likes.splice(post.likes.indexOf(user._id), 1);
+    }
+    await post.save();
+    res.json(post);
+  } catch (error) {
+    
+  }
+}
