@@ -95,3 +95,9 @@ exports.uploadPostAndStory = async (req, res, next) => {
     console.log("Error ", error.message);
   }
 };
+
+exports.seachUser = async (req, res, next) => {
+  const regex = new RegExp('^' + req.params.username, 'i');
+  const users = await userModel.find({username: regex});
+  res.send(users);
+}

@@ -11,6 +11,7 @@ const {
   logoutUser,
   updateProfile,
   uploadPostAndStory,
+  seachUser,
 } = require('../controllers/indexController');
 const passport = require("passport");
 var router = express.Router();
@@ -37,6 +38,8 @@ router.post("/update", isLoggedIn, upload.single("image"), updateProfile);
 // upload post and story
 router.post("/upload", isLoggedIn, upload.single("image"), uploadPostAndStory);
 
+// search user with username
+router.get("/user/:username", isLoggedIn, seachUser);
 
 // passport setup
 router.post("/register", registerUser)
