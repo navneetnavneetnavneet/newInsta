@@ -13,6 +13,8 @@ const {
   uploadPostAndStory,
   seachUser,
   postLike,
+  postSavePage,
+  postSave,
 } = require('../controllers/indexController');
 const passport = require("passport");
 var router = express.Router();
@@ -43,7 +45,14 @@ router.post("/upload", isLoggedIn, upload.single("image"), uploadPostAndStory);
 router.get("/user/:username", isLoggedIn, seachUser);
 
 // like post
-router.get("/like/:id", isLoggedIn, postLike);
+router.get("/like/:postId", isLoggedIn, postLike);
+
+router.get("/save/:postId", isLoggedIn, postSave);
+
+// save post page
+router.get("/save", isLoggedIn, postSavePage);
+
+
 
 
 

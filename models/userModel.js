@@ -54,6 +54,12 @@ const userSchema = mongoose.Schema(
                 ref: "post" 
             }
         ],
+        savePosts: [
+            { 
+                type: mongoose.Schema.Types.ObjectId, 
+                ref: "post" 
+            }
+        ],
     }, 
     {
         timestamps: true

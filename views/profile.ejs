@@ -42,4 +42,72 @@
       </div>
   </div>
 
+  <div class="sidebar w-[50%] min-h-screen bg-zinc-800 fixed top-0 -right-[50%] duration-500 z-[99]">
+    <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-500 text-white">
+      <i id="closeicon" class="text-[1.4rem] ri-close-fill"></i>
+      <a href="/upload"><i class="text-[1.4rem] ri-add-box-line"></i></a>
+    </div>
+    <a href="/feed">
+      <div class="flex items-center gap-3 px-4 py-4 border-b border-zinc-500 text-white">
+        <i class="ri-home-line"></i>
+        <h5 class="text-xl">Home</h5>
+      </div>
+    </a>
+    <a href="/profile">
+      <div class="flex items-center gap-3 px-4 py-4 border-b border-zinc-500 text-white">
+        <i class="ri-user-line"></i>
+        <h5 class="text-xl">Profile</h5>
+      </div>
+    </a>
+    <a href="/edit">
+      <div class="flex items-center gap-3 px-4 py-4 border-b border-zinc-500 text-white">
+        <i class="ri-pencil-line"></i>
+        <h5 class="text-xl">Edit</h5>
+      </div>
+    </a>
+    <a href="/save">
+      <div class="flex items-center gap-3 px-4 py-4 border-b border-zinc-500 text-white">
+        <i class="ri-bookmark-line"></i>
+        <h5 class="text-xl">Save</h5>
+      </div>
+    </a>
+    <a href="#">
+      <div class="flex items-center gap-3 px-4 py-4 border-b border-zinc-500 text-white">
+        <i class="ri-qr-code-line"></i>
+        <h5 class="text-xl">QR-code</h5>
+      </div>
+    </a>
+    <a href="#">
+      <div class="flex items-center gap-3 px-4 py-4 border-b border-zinc-500 text-white">
+        <i class="ri-settings-3-line"></i>
+        <h5 class="text-xl">Setting</h5>
+      </div>
+    </a>
+    <a href="/logout">
+      <div class="flex items-center gap-3 px-4 py-4 border-b border-zinc-500 text-white">
+        <i class="ri-logout-box-line"></i>
+        <h5 class="text-xl">Logout</h5>
+      </div>
+    </a>
+  </div>
+
+  <script>
+    function menuIconHandle(){
+      document.querySelector("#menuicon")
+      .addEventListener("click", function(){
+        let sidebar = document.querySelector(".sidebar");
+        sidebar.classList.remove("-right-[50%]");
+        sidebar.classList.add("right-[0%]");
+      })
+
+      document.querySelector("#closeicon")
+      .addEventListener("click", function(){
+        let sidebar = document.querySelector(".sidebar");
+        sidebar.classList.remove("right-[0%]");
+        sidebar.classList.add("-right-[50%]");
+      })
+    }
+    menuIconHandle();
+  </script>
+
 <% include ./partials/footer.ejs %>

@@ -37,12 +37,14 @@ exports.loginPage = (req, res, next) => {
 };
 
 exports.profilePage = async (req, res, next) => {
-  const user = await userModel.findOne({ username: req.session.passport.user }).populate("posts");
+  const user = await userModel
+    .findOne({ username: req.session.passport.user })
+    .populate("posts");
   res.render("profile", { footer: true, user });
 };
 
 exports.feedPage = async (req, res, next) => {
-  const user = await userModel.findOne({username: req.session.passport.user});
+  const user = await userModel.findOne({ username: req.session.passport.user });
   const posts = await postModel.find().populate("user");
   res.render("feed", { footer: true, user, posts });
 };
@@ -97,24 +99,49 @@ exports.uploadPostAndStory = async (req, res, next) => {
 };
 
 exports.seachUser = async (req, res, next) => {
-  const regex = new RegExp('^' + req.params.username, 'i');
-  const users = await userModel.find({username: regex});
+  const regex = new RegExp("^" + req.params.username, "i");
+  const users = await userModel.find({ username: regex });
   res.send(users);
-}
+};
 
 exports.postLike = async (req, res, next) => {
   try {
-    const user = await userModel.findOne({username: req.session.passport.user});
-    const post = await postModel.findOne({_id: req.params.id});
-    if(post.likes.indexOf(user._id) === -1){
+    const user = await userModel.findOne({
+      username: req.session.passport.user,
+    });
+    const post = await postModel.findOne({ _id: req.params.postId });
+    if (post.likes.indexOf(user._id) === -1) {
       post.likes.push(user._id);
-    }
-    else{
+    } else {
       post.likes.splice(post.likes.indexOf(user._id), 1);
     }
     await post.save();
     res.json(post);
   } catch (error) {
-    
+    // console.log(error);
   }
-}
+};
+
+exports.postSave = async (req, res, next) => {
+  try {
+    const user = await userModel.findOne({
+      username: req.session.passport.user,
+    });
+    const post = await postModel.findOne({ _id: req.params.postId });
+
+    if (user.savePosts.indexOf(post._id) === -1) {
+      user.savePosts.push(post._id);
+    }
+    await user.save();
+    res.redirect("/feed");
+  } catch (error) {
+    // console.log(error);
+  }
+};
+
+exports.postSavePage = async (req, res, next) => {
+  const user = await userModel
+    .findOne({ username: req.session.passport.user })
+    .populate("savePosts");
+  res.render("save", { footer: true, user });
+};
