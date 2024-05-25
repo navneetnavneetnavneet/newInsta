@@ -1,5 +1,6 @@
 const userModel = require("../models/userModel");
 const postModel = require("../models/postModel");
+const commentModel = require("../models/commentModel");
 const passport = require("passport");
 const localStrategy = require("passport-local");
 
@@ -54,12 +55,14 @@ exports.editPage = async (req, res, next) => {
   res.render("edit", { footer: true, user });
 };
 
-exports.searchPage = (req, res, next) => {
-  res.render("search", { footer: true });
+exports.searchPage = async (req, res, next) => {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+  res.render("search", { footer: true, user });
 };
 
 exports.uploadPage = async (req, res, next) => {
-  res.render("upload", { footer: true });
+  const user = await userModel.findOne({ username: req.session.passport.user });
+  res.render("upload", { footer: true, user });
 };
 
 exports.updateProfile = async (req, res, next) => {
@@ -144,4 +147,39 @@ exports.postSavePage = async (req, res, next) => {
     .findOne({ username: req.session.passport.user })
     .populate("savePosts");
   res.render("save", { footer: true, user });
+};
+
+exports.postCommentPage = async (req, res, next) => {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+  const post = await postModel.findOne({ _id: req.params.postId }).populate({
+    path: "comments",
+    populate: {
+      path: "users",
+    },
+  });
+
+  // console.log(post)
+
+  res.render("comment", { footer: true, user, post });
+};
+
+exports.postComment = async (req, res, next) => {
+  try {
+    const user = await userModel.findOne({
+      username: req.session.passport.user,
+    });
+    const post = await postModel.findOne({ _id: req.params.postId });
+
+    const comment = await commentModel.create({
+      comment: req.body.comment,
+      post: post._id,
+    });
+    comment.users.push(user._id);
+    post.comments.push(comment._id);
+    await comment.save();
+    await post.save();
+    res.redirect("back");
+  } catch (error) {
+    console.log(error);
+  }
 };

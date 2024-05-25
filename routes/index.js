@@ -1,5 +1,5 @@
-var express = require('express');
-const { 
+var express = require("express");
+const {
   singupPage,
   loginPage,
   profilePage,
@@ -15,13 +15,14 @@ const {
   postLike,
   postSavePage,
   postSave,
-} = require('../controllers/indexController');
+  postCommentPage,
+  postComment,
+} = require("../controllers/indexController");
 const passport = require("passport");
 var router = express.Router();
 const upload = require("../middleware/multer");
 
-
-router.get('/', singupPage);
+router.get("/", singupPage);
 
 router.get("/login", loginPage);
 
@@ -47,10 +48,18 @@ router.get("/user/:username", isLoggedIn, seachUser);
 // like post
 router.get("/like/:postId", isLoggedIn, postLike);
 
-router.get("/save/:postId", isLoggedIn, postSave);
-
 // save post page
 router.get("/save", isLoggedIn, postSavePage);
+
+// post save karna
+router.get("/save/:postId", isLoggedIn, postSave);
+
+// comment post page
+router.get("/comment/:postId", isLoggedIn, postCommentPage);
+
+// comment create karna
+router.post("/comment/post/:postId", isLoggedIn, postComment);
+
 
 
 
@@ -63,20 +72,23 @@ router.get("/save", isLoggedIn, postSavePage);
 
 
 // passport setup
-router.post("/register", registerUser)
+router.post("/register", registerUser);
 
-router.post("/login", passport.authenticate("local", {
-  successRedirect: "/feed",
-  failureRedirect: "/login"
-}), loginPage)
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/feed",
+    failureRedirect: "/login",
+  }),
+  loginPage
+);
 
-router.get("/logout", logoutUser)
+router.get("/logout", logoutUser);
 
-function isLoggedIn(req, res, next){
-  if(req.isAuthenticated()){
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
     return next();
-  }
-  else{
+  } else {
     res.redirect("/login");
   }
 }

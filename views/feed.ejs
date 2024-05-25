@@ -88,7 +88,9 @@
             <div class="options w-full px-4 flex justify-between items-center text-[1.4rem]">
               <div class="flex gap-3 mt-2">
                     <i data-id="<%= post._id %>" class="like <%= post.likes.indexOf(user._id) === -1 ? 'ri-heart-3-line' : 'ri-heart-3-fill text-red-500' %>"></i>
-                    <i class="ri-chat-3-line"></i>
+                    <a href="/comment/<%= post._id %>">
+                      <i class="ri-chat-3-line"></i>
+                    </a>
                     <i class="ri-share-circle-line"></i>
               </div>
               <i data-id="<%= post._id %>" class="savePost <%= user.savePosts.indexOf(post._id) === -1 ? 'ri-bookmark-line' : 'ri-bookmark-fill text-white' %>"></i>

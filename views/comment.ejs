@@ -1,0 +1,27 @@
+<% include ./partials/header.ejs %>
+
+    <div class="w-full min-h-screen bg-zinc-800">
+        <div class="comments w-full h-[85vh] overflow-y-auto">
+            <% post.comments.forEach(function(elem){ %>
+                <div class="comment w-full px-4 py-4 border-b border-zinc-200">
+                    <div class="user w-full flex items-center gap-2">
+                        <div class="w-[8vw] h-[8vw] bg-sky-100 rounded-full overflow-hidden">
+                            <img class="w-full h-full object-cover" src="/images/uploads/<%= elem.users[0].profileImage %>" alt="">
+                        </div>
+                        <div class="w-full text-white">
+                            <h3 class="text-xl leading-none"><%= elem.users[0].username %> <span class="text-sm"><%= elem.comment %>.</span></h3>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <div class="w-full h-[8vh] py-2 fixed bottom-14">
+            <form class="flex gap-1" action="/comment/post/<%= post._id %>" method="post">
+                <textarea class="w-full h-[6vh] resize-none outline-none rounded-full px-4 py-2 text-2xl font-semibold" name="comment" type="text" placeholder="message"></textarea>
+                <input class="rounded-full h-[6vh] px-4 py-2 bg-zinc-600 text-xl font-semibold text-white" type="submit">
+            </form>
+        </div>
+    </div>
+
+<% include ./partials/footer.ejs %>
