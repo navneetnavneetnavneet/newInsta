@@ -183,3 +183,36 @@ exports.postComment = async (req, res, next) => {
     console.log(error);
   }
 };
+
+exports.loggedInUserAndFindUserPost = async (req, res, next) => {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+  const finduser = await userModel
+    .findOne({ _id: req.params.userId })
+    .populate({
+      path: "posts",
+      populate: {
+        path: "user",
+      },
+    });
+  console.log(finduser);
+  res.render("finduserpost", { footer: true, user, finduser });
+};
+
+exports.loggedInUserAndFindUserSavePost = async (req, res, next) => {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+  const finduser = await userModel
+    .findOne({ _id: req.params.userId })
+    .populate("savePosts");
+  res.render("findusersavepost", { footer: true, user, finduser });
+};
+
+exports.finduserProfilePage = async (req, res, next) => {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+  if (user.username === req.params.username) {
+    return res.redirect("/profile");
+  }
+  const finduser = await userModel
+    .findOne({ username: req.params.username })
+    .populate("posts");
+  res.render("finduserprofile", { footer: true, user, finduser });
+};

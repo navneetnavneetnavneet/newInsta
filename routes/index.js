@@ -17,6 +17,9 @@ const {
   postSave,
   postCommentPage,
   postComment,
+  loggedInUserAndFindUserPost,
+  loggedInUserAndFindUserSavePost,
+  finduserProfilePage,
 } = require("../controllers/indexController");
 const passport = require("passport");
 var router = express.Router();
@@ -60,7 +63,14 @@ router.get("/comment/:postId", isLoggedIn, postCommentPage);
 // comment create karna
 router.post("/comment/post/:postId", isLoggedIn, postComment);
 
+// loggedIn and finduser user ki post show karna
+router.get("/user/post/:userId", isLoggedIn, loggedInUserAndFindUserPost);
 
+// loggedIn and finduser user ki saved post show karna
+router.get("/user/save/:userId", isLoggedIn, loggedInUserAndFindUserSavePost);
+
+// finduser ki profile show karna
+router.get("/profile/:username", isLoggedIn, finduserProfilePage);
 
 
 

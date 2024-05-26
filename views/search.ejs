@@ -40,15 +40,17 @@
       .then(function (response) {
         var clutter = "";
         response.data.forEach(function (user) {
-          clutter += `<div class="text-white flex items-center gap-2 mt-5">
-            <div class="image w-[11vw] h-[11vw] rounded-full bg-sky-100 overflow-hidden">
-                <img class="w-full h-full object-cover" src="/images/uploads/${user.profileImage}" alt="">
-            </div>
-            <div class="text">
-                <h3>${user.username}</h3>
-                <h4 class="text-xs opacity-30 leading-none">${user.name}</h4>
-            </div>
-        </div>`;
+          clutter += `<a href="/profile/${user.username}">
+      <div class="text-white flex items-center gap-2 mt-5">
+        <div class="image w-[11vw] h-[11vw] rounded-full bg-sky-100 overflow-hidden">
+            <img class="w-full h-full object-cover" src="/images/uploads/${user.profileImage}" alt="">
+        </div>
+        <div class="text">
+            <h3>${user.username}</h3>
+            <h4 class="text-xs opacity-30 leading-none">${user.name}</h4>
+        </div>
+    </div>
+    </a>`;
         });
         document.querySelector(".users").innerHTML = clutter;
       });
