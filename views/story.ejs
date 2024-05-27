@@ -1,0 +1,74 @@
+<% include ./partials/header.ejs %>
+
+    <div class="w-full h-screen bg-zinc-500 relative">
+        <div style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0.09), rgba(0, 0, 0, 0.5));" class="w-full px-4 py-4 absolute top-0 left-0">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-white/30 flex items-center justify-center">
+                    <a href="/feed">
+                        <i class="text-white ri-arrow-left-line"></i>
+                    </a>
+                </div>
+                <div class="user flex items-center gap-2">
+                    <div class="w-[8vw] h-[8vw] rounded-full bg-sky-100 overflow-hidden">
+                        <img class="w-full h-full object-cover" src="/images/uploads/<%= storyUser.profileImage %>" alt="">
+                    </div>
+                    <h4 class="text-lg font-semibold text-white"><%= storyUser.username %></h4>
+                </div>
+            </div>
+            <div class="progressContainer w-full h-1 mt-4 bg-zinc-600">
+                <div class="progress w-0 h-full bg-white/80"></div>
+            </div>
+        </div>
+        <div class="storyImage w-full h-full overflow-hidden">
+            <img class="w-full h-full object-cover" src="/images/uploads/<%= storyImage.picture %> " alt="">
+        </div>
+        <div class="w-full px-2 py-2 fixed bottom-0 flex items-center gap-2">
+            <input class="w-full px-4 py-2 bg-transparent border-2 border-zinc-white rounded-full text-xl" type="text" placeholder="message">
+            <div class="icons flex items-center gap-2 text-4xl text-white">
+                <i data-id="<%= storyId %>" class="storylike <%= storyImage.likes.indexOf(user._id) === -1 ? 'ri-heart-3-line' : 'ri-heart-3-fill text-red-600' %>"></i>
+                <i class="ri-send-plane-fill"></i>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function handleStoryProgress(){
+            var progress = document.querySelector(".progress");
+
+            let count = 0;
+            let interval = setInterval(function(){
+                if(count < 100){
+                    count++;
+                    progress.style.width = `${count}%`;
+                }
+                else{
+                    clearInterval(interval);
+                    window.location.href = 'http://localhost:3000/story/<%= storyUser._id %>/<%= Number(number) + 1 %>'
+                }
+            }, 30)
+        }
+        handleStoryProgress();
+
+        function handleStoryLikes(){
+            document.querySelector(".icons")
+            .addEventListener("click", function(dets){
+                if(dets.target.classList.contains("storylike")){
+                    axios.get(`/like/story/${dets.target.dataset.id}`)
+                    .then(function(response){
+                        if(dets.target.classList.contains("ri-heart-3-line")){
+                            dets.target.classList.remove("ri-heart-3-line");
+                            dets.target.classList.add("ri-heart-3-fill", "text-red-600");
+                        }
+                        else{
+                            dets.target.classList.remove("ri-heart-3-fill", "text-red-600");
+                            dets.target.classList.add("ri-heart-3-line");
+                        }
+                    })
+                }
+            })
+        }
+        handleStoryLikes();
+    </script>
+
+<% include ./partials/footer.ejs %>

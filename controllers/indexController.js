@@ -1,6 +1,7 @@
 const userModel = require("../models/userModel");
 const postModel = require("../models/postModel");
 const commentModel = require("../models/commentModel");
+const storyModel = require("../models/storyModel");
 const passport = require("passport");
 const localStrategy = require("passport-local");
 
@@ -47,7 +48,24 @@ exports.profilePage = async (req, res, next) => {
 exports.feedPage = async (req, res, next) => {
   const user = await userModel.findOne({ username: req.session.passport.user });
   const posts = await postModel.find().populate("user");
-  res.render("feed", { footer: true, user, posts });
+
+  const stories = await storyModel
+    .find({ user: { $ne: user._id } })
+    .populate("user");
+
+  const obj = {};
+  const filteredStory = stories.filter((story) => {
+    if (!obj[story.user._id]) {
+      obj[story.user._id] = "kuchh bhi ho sakta hai";
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  // console.log(filteredStory);
+
+  res.render("feed", { footer: true, user, posts, stories: filteredStory });
 };
 
 exports.editPage = async (req, res, next) => {
@@ -88,12 +106,24 @@ exports.uploadPostAndStory = async (req, res, next) => {
     const user = await userModel.findOne({
       username: req.session.passport.user,
     });
-    const post = await postModel.create({
-      caption: req.body.caption,
-      user: user._id,
-      picture: req.file.filename,
-    });
-    user.posts.push(post._id);
+
+    // console.log(req.body.type);
+
+    if (req.body.type === "post") {
+      const post = await postModel.create({
+        caption: req.body.caption,
+        user: user._id,
+        picture: req.file.filename,
+      });
+      user.posts.push(post._id);
+    } else if (req.body.type === "story") {
+      const story = await storyModel.create({
+        picture: req.file.filename,
+        user: user._id,
+      });
+      user.stories.push(story._id);
+    }
+
     await user.save();
     res.redirect("/feed");
   } catch (error) {
@@ -215,4 +245,61 @@ exports.finduserProfilePage = async (req, res, next) => {
     .findOne({ username: req.params.username })
     .populate("posts");
   res.render("finduserprofile", { footer: true, user, finduser });
+};
+
+exports.loggedInUserStory = async (req, res, next) => {
+  const storyUser = await userModel
+    .findOne({
+      username: req.session.passport.user,
+    })
+    .populate("stories");
+
+  if (storyUser.stories.length > req.params.number) {
+    res.render("story", {
+      footer: false,
+      user: storyUser,
+      storyUser,
+      storyImage: storyUser.stories[req.params.number],
+      number: req.params.number,
+      storyId: storyUser.stories[req.params.number]._id,
+    });
+  } else {
+    res.redirect("/feed");
+  }
+};
+
+exports.allUserStory = async (req, res, next) => {
+  const loggedInUser = await userModel.findOne({
+    username: req.session.passport.user,
+  });
+
+  const storyUser = await userModel
+    .findOne({ _id: req.params.userId })
+    .populate("stories");
+
+  if (storyUser.stories.length > req.params.number) {
+    res.render("story", {
+      footer: false,
+      user: loggedInUser,
+      storyUser,
+      storyImage: storyUser.stories[req.params.number],
+      number: req.params.number,
+      storyId: storyUser.stories[req.params.number]._id,
+    });
+  } else {
+    res.redirect("/feed");
+  }
+};
+
+exports.storyLike = async (req, res, next) => {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+  const story = await storyModel.findOne({ _id: req.params.storyId });
+  if(story.likes.indexOf(user._id) === -1){
+    story.likes.push(user._id);
+  }
+  else{
+    story.likes.splice(story.likes.indexOf(user._id), 1);
+  }
+  await story.save();
+  res.redirect("back");
 };

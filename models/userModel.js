@@ -54,6 +54,12 @@ const userSchema = mongoose.Schema(
                 ref: "post" 
             }
         ],
+        stories: [
+            { 
+                type: mongoose.Schema.Types.ObjectId, 
+                ref: "story" 
+            }
+        ],
         savePosts: [
             { 
                 type: mongoose.Schema.Types.ObjectId, 

@@ -20,6 +20,9 @@ const {
   loggedInUserAndFindUserPost,
   loggedInUserAndFindUserSavePost,
   finduserProfilePage,
+  loggedInUserStory,
+  allUserStory,
+  storyLike,
 } = require("../controllers/indexController");
 const passport = require("passport");
 var router = express.Router();
@@ -72,8 +75,14 @@ router.get("/user/save/:userId", isLoggedIn, loggedInUserAndFindUserSavePost);
 // finduser ki profile show karna
 router.get("/profile/:username", isLoggedIn, finduserProfilePage);
 
+// loggedIn user ki story show karna
+router.get("/story/:number", isLoggedIn, loggedInUserStory);
 
+// all user ki story show karna
+router.get("/story/:userId/:number", isLoggedIn, allUserStory);
 
+// story like
+router.get("/like/story/:storyId", isLoggedIn, storyLike);
 
 
 
