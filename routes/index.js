@@ -23,6 +23,7 @@ const {
   loggedInUserStory,
   allUserStory,
   storyLike,
+  followAndfollowing,
 } = require("../controllers/indexController");
 const passport = require("passport");
 var router = express.Router();
@@ -75,6 +76,9 @@ router.get("/user/save/:userId", isLoggedIn, loggedInUserAndFindUserSavePost);
 // finduser ki profile show karna
 router.get("/profile/:username", isLoggedIn, finduserProfilePage);
 
+// follow and following
+router.get("/follow/:finduserId", isLoggedIn, followAndfollowing);
+
 // loggedIn user ki story show karna
 router.get("/story/:number", isLoggedIn, loggedInUserStory);
 
@@ -83,7 +87,6 @@ router.get("/story/:userId/:number", isLoggedIn, allUserStory);
 
 // story like
 router.get("/like/story/:storyId", isLoggedIn, storyLike);
-
 
 
 

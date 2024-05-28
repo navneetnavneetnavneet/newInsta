@@ -224,7 +224,7 @@ exports.loggedInUserAndFindUserPost = async (req, res, next) => {
         path: "user",
       },
     });
-  console.log(finduser);
+  // console.log(finduser);
   res.render("finduserpost", { footer: true, user, finduser });
 };
 
@@ -246,6 +246,25 @@ exports.finduserProfilePage = async (req, res, next) => {
     .populate("posts");
   res.render("finduserprofile", { footer: true, user, finduser });
 };
+
+exports.followAndfollowing = async (req, res, next) => {
+  const followKarneWaala = await userModel.findOne({username: req.session.passport.user});
+  const followHoneWaala = await userModel.findOne({_id: req.params.finduserId});
+
+  if(followKarneWaala.followings.indexOf(followHoneWaala._id) === -1){
+    followKarneWaala.followings.push(followHoneWaala._id);
+
+    followHoneWaala.followers.push(followKarneWaala._id);
+  }
+  else{
+    followKarneWaala.followings.splice(followKarneWaala.followings.indexOf(followHoneWaala._id), 1);
+
+    followHoneWaala.followers.splice(followHoneWaala.followers.indexOf(followKarneWaala._id), 1);
+  }
+  await followKarneWaala.save();
+  await followHoneWaala.save();
+  res.redirect("back");
+}
 
 exports.loggedInUserStory = async (req, res, next) => {
   const storyUser = await userModel
