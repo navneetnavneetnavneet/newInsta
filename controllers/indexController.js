@@ -248,23 +248,32 @@ exports.finduserProfilePage = async (req, res, next) => {
 };
 
 exports.followAndfollowing = async (req, res, next) => {
-  const followKarneWaala = await userModel.findOne({username: req.session.passport.user});
-  const followHoneWaala = await userModel.findOne({_id: req.params.finduserId});
+  const followKarneWaala = await userModel.findOne({
+    username: req.session.passport.user,
+  });
+  const followHoneWaala = await userModel.findOne({
+    _id: req.params.finduserId,
+  });
 
-  if(followKarneWaala.followings.indexOf(followHoneWaala._id) === -1){
+  if (followKarneWaala.followings.indexOf(followHoneWaala._id) === -1) {
     followKarneWaala.followings.push(followHoneWaala._id);
 
     followHoneWaala.followers.push(followKarneWaala._id);
-  }
-  else{
-    followKarneWaala.followings.splice(followKarneWaala.followings.indexOf(followHoneWaala._id), 1);
+  } else {
+    followKarneWaala.followings.splice(
+      followKarneWaala.followings.indexOf(followHoneWaala._id),
+      1
+    );
 
-    followHoneWaala.followers.splice(followHoneWaala.followers.indexOf(followKarneWaala._id), 1);
+    followHoneWaala.followers.splice(
+      followHoneWaala.followers.indexOf(followKarneWaala._id),
+      1
+    );
   }
   await followKarneWaala.save();
   await followHoneWaala.save();
   res.redirect("back");
-}
+};
 
 exports.loggedInUserStory = async (req, res, next) => {
   const storyUser = await userModel
@@ -313,12 +322,24 @@ exports.allUserStory = async (req, res, next) => {
 exports.storyLike = async (req, res, next) => {
   const user = await userModel.findOne({ username: req.session.passport.user });
   const story = await storyModel.findOne({ _id: req.params.storyId });
-  if(story.likes.indexOf(user._id) === -1){
+  if (story.likes.indexOf(user._id) === -1) {
     story.likes.push(user._id);
-  }
-  else{
+  } else {
     story.likes.splice(story.likes.indexOf(user._id), 1);
   }
   await story.save();
   res.redirect("back");
+};
+
+exports.chatPage = async (req, res, next) => {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+  const alluser = await userModel.find({ _id: { $ne: user._id } });
+  // console.log(alluser);
+  res.render("chat", { footer: true, user, alluser });
+};
+
+exports.chatMessagePage = async (req, res, next) => {
+  const user = await userModel.findOne({ username: req.session.passport.user });
+  const finduser = await userModel.findOne({ _id: req.params.userId });
+  res.render("chatMessage", { footer: false, user, finduser });
 };

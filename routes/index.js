@@ -24,6 +24,8 @@ const {
   allUserStory,
   storyLike,
   followAndfollowing,
+  chatPage,
+  chatMessagePage,
 } = require("../controllers/indexController");
 const passport = require("passport");
 var router = express.Router();
@@ -88,8 +90,11 @@ router.get("/story/:userId/:number", isLoggedIn, allUserStory);
 // story like
 router.get("/like/story/:storyId", isLoggedIn, storyLike);
 
+// chat page
+router.get("/chat", isLoggedIn, chatPage);
 
-
+// chatmessage page
+router.get("/chat/user/:userId", isLoggedIn, chatMessagePage);
 
 
 

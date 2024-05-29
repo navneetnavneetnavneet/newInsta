@@ -1,0 +1,42 @@
+<% include ./partials/header.ejs %>
+
+<div class="w-full h-screen bg-zinc-900">
+    <div class="nav w-full px-4 py-4 border-b-2 flex items-center justify-between text-white">
+        <div class="flex items-center gap-x-2">
+            <a href="/chat">
+                <i class="ri-arrow-left-line text-3xl"></i>
+            </a>
+            <div class="user flex items-center gap-x-2">
+                <div class="w-[8vw] h-[8vw] rounded-full bg-sky-100"></div>
+                <div class="">
+                    <h4 class="text-xl font-semibold leading-none">username</h4>
+                    <span class="text-xs">Active</span>
+                </div>
+            </div>
+        </div>
+        <div class="icon flex items-center gap-x-5">
+            <i class="ri-phone-line text-2xl"></i>
+            <i class="ri-vidicon-line text-2xl"></i>
+        </div>
+    </div>
+    <div class="conversationArea w-full min-h-[85vh] overflow-y-auto bg-zinc-600 px-2 py-2">
+        <div class="outgoingMessage px-3 py-2 mb-1 ml-auto rounded-md text-white font-semibold bg-blue-600 w-fit">outgoingMessage</div>
+        <div class="incomingMessage px-3 mt-1 py-2 rounded-md text-white font-semibold bg-green-600 w-fit">incomingMessage</div>
+    </div>
+    <div class="w-full fixed bottom-1 left-0 flex gap-2">
+        <input
+          id="message"
+          class="w-full h-12 leading-none outline-none px-4 py-4 rounded-full text-zinc-600 text-xl font-semibold"
+          type="text"
+          placeholder="message"
+        />
+        <button
+          id="btn"
+          class="px-6 rounded-full bg-zinc-700 text-xl font-semibold text-zinc-100"
+        >
+          send
+        </button>
+      </div>
+</div>
+
+<% include ./partials/footer.ejs %>
