@@ -57,4 +57,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+userModel.find().then(async allUsers => {
+  await Promise.all(allUsers.map(async singleUser => {
+    singleUser.socketId = ""
+    await singleUser.save()
+  }))
+})
+
 module.exports = app;

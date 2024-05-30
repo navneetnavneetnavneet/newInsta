@@ -66,6 +66,9 @@ const userSchema = mongoose.Schema(
                 ref: "post" 
             }
         ],
+        socketId: {
+            type: String
+        }
     }, 
     {
         timestamps: true
