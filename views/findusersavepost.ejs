@@ -37,7 +37,7 @@
           <% }else{ %>
               <a class="px-6 py-2 bg-zinc-800 text-xs rounded-md" href="/follow/<%= finduser._id %>">Following</a>
           <% } %>
-          <a class="px-6 py-2 bg-zinc-800 text-xs rounded-md" href="#">Message</a>
+          <a class="px-6 py-2 bg-zinc-800 text-xs rounded-md" href="/chat/user/<%= finduser._id %>">Message</a>
           <a class="px-6 py-2 bg-zinc-800 text-xs rounded-md" href="#">Contact</a>
         <% }else{ %>
           <a class="px-3 py-2 bg-zinc-800 text-xs rounded-md" href="/edit">Edit Profile</a>
