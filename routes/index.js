@@ -36,6 +36,13 @@ router.get("/", singupPage);
 
 router.get("/login", loginPage);
 
+router.get('/login/federated/google', passport.authenticate('google'));
+
+router.get('/oauth2/redirect/google', passport.authenticate('google', {
+  successRedirect: '/feed',
+  failureRedirect: '/login'
+}));
+
 router.get("/profile", isLoggedIn, profilePage);
 
 router.get("/feed", isLoggedIn, feedPage);

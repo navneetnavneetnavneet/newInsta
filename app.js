@@ -12,6 +12,7 @@ const userModel = require("./models/userModel");
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const passport = require("passport");
+const MongoStore = require("connect-mongo");
 
 var app = express();
 
@@ -25,12 +26,31 @@ app.set('view engine', 'ejs');
 app.use(expressSession({
   resave: false,
   saveUninitialized: false,
-  secret: "hello"
+  secret: "hello",
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  },
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URL,
+    autoRemove: "native"
+  })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(userModel.serializeUser());
 passport.deserializeUser(userModel.deserializeUser());
+
+passport.serializeUser(function(user, cb) {
+  process.nextTick(function() {
+    cb(null, { id: user.id, username: user.username, name: user.name });
+  });
+});
+
+passport.deserializeUser(function(user, cb) {
+  process.nextTick(function() {
+    return cb(null, user);
+  });
+});
 
 app.use(logger('dev'));
 app.use(express.json());

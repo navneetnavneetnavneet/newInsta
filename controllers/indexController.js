@@ -4,6 +4,34 @@ const commentModel = require("../models/commentModel");
 const storyModel = require("../models/storyModel");
 const passport = require("passport");
 const localStrategy = require("passport-local");
+const GoogleStrategy = require("passport-google-oidc");
+
+// google Strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env["GOOGLE_CLIENT_ID"],
+      clientSecret: process.env["GOOGLE_CLIENT_SECRET"],
+      callbackURL: "/oauth2/redirect/google",
+      scope: ["profile", "email"],
+    },
+    async function verify(issuer, profile, cb) {
+      // console.log(profile);
+      const user = await userModel.findOne({ email: profile.emails[0].value });
+      if (user) {
+        return cb(null, user);
+      }
+
+      const newUser = await userModel.create({
+        username: profile.name.givenName,
+        name: profile.displayName,
+        email: profile.emails[0].value,
+      });
+
+      return cb(null, newUser);
+    }
+  )
+);
 
 // local Strategy
 passport.use(new localStrategy(userModel.authenticate()));
@@ -46,6 +74,11 @@ exports.profilePage = async (req, res, next) => {
 };
 
 exports.feedPage = async (req, res, next) => {
+
+  if (!req.user) {
+    return;
+  }
+
   const user = await userModel.findOne({ username: req.session.passport.user });
   const posts = await postModel.find().populate("user");
 
